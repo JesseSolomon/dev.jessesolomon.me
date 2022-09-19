@@ -1,0 +1,14 @@
+/**
+ * @param $anchor: "top" | "center" | "bottom" Point within the ClientRect where --appear: 0
+ * @param $offset: <number> Offset from the bottom of the viewport where --appear: 1 (NOTE: measured in pixels, however not px)
+ * Sets a variable (--appear) to a range from 0 - 1, where 0 is `anchor` > `viewportHeight`, and 1 is `anchor` < `viewportHeight` - `offset`
+ * This can be used in transform, opacity, and other calculates for scroll-based appeance
+ */
+@mixin vars($anchor: "center", $offset: 20) {
+    @if ($anchor: "top") {
+        --appear: calc(max(min((var(--viewport-height) - (var(--top) - var(--scroll))) / #{$offset}, 1), 0));
+    }
+    // @if ($anchor: "bottom") {
+        
+    // }
+}
