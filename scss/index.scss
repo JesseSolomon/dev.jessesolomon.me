@@ -1,10 +1,14 @@
 @use "./mixins/appear.scss";
 
-body {
-    margin: 0;
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display&family=Source+Code+Pro:wght@400;700&display=swap');
+
+:root {
+    // Color palette
+    --palette-sky-blue-crayola: #2DE1FC;
+    
+    font-family: "Playfair Display", serif;
 }
 
-.test {
-    @include appear.vars();
-    opacity: var(--appear);
+body {
+    margin: 0;
 }
