@@ -8,6 +8,7 @@ document.addEventListener("DOMContentLoaded", () => {
 class IntroElement extends HTMLElement {
     constructor() {
         super();
+        this.start = Date.now();
         document.body.addEventListener("js:loaded", () => this.setup());
     }
     setup() {
@@ -22,7 +23,10 @@ class IntroElement extends HTMLElement {
         });
         this.plane = new THREE.Mesh(new THREE.PlaneGeometry(1, 1), new THREE.ShaderMaterial({
             ...this.shaders,
-            transparent: true
+            transparent: true,
+            uniforms: {
+                time: { value: this.start - Date.now() }
+            }
         }));
         this.plane.position.set(0, 0, 2);
         this.camera.position.set(0, 0, 0);
@@ -58,6 +62,7 @@ class IntroElement extends HTMLElement {
         this.plane.scale.set((width > height ? width / height : 1) * 2, (width < height ? height / width : 1) * 2, 0);
     }
     render(animate) {
+        this.plane.material.uniforms.time.value = this.start - Date.now();
         this.renderer.render(this.scene, this.camera);
         if (animate)
             requestAnimationFrame(() => this.render(true));

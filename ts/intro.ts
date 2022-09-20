@@ -1,9 +1,10 @@
 class IntroElement extends HTMLElement {
+	private start: number = Date.now();
 	private canvas: HTMLCanvasElement;
 	private scene: THREE.Scene;
 	private camera: THREE.OrthographicCamera;
 	private renderer: THREE.Renderer;
-	private plane: THREE.Mesh;
+	private plane: THREE.Mesh<THREE.PlaneGeometry, THREE.ShaderMaterial>;
 	private shaders: { vertexShader: string, fragmentShader: string };
 
 	setup() {
@@ -31,7 +32,10 @@ class IntroElement extends HTMLElement {
 			new THREE.PlaneGeometry(1, 1),
 			new THREE.ShaderMaterial({
 				...this.shaders,
-				transparent: true
+				transparent: true,
+				uniforms: {
+					time: { value: this.start - Date.now() }
+				}
 			})
 		);
 
@@ -81,6 +85,8 @@ class IntroElement extends HTMLElement {
 	}
 
 	render(animate: boolean) {
+		this.plane.material.uniforms.time.value = this.start - Date.now();
+		
 		this.renderer.render(this.scene, this.camera);
 
 		if (animate) requestAnimationFrame(() => this.render(true));

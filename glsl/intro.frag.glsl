@@ -1,6 +1,8 @@
 in vec3 worldPosition;
 in vec3 modelPosition;
 
+uniform float time;
+
 //	Classic Perlin 3D Noise 
 //	by Stefan Gustavson
 //
@@ -77,5 +79,9 @@ float cnoise(vec3 P){
 }
 
 void main() {
-	gl_FragColor = vec4(1, 0, 1, 1);
+	float gamma = cnoise(vec3(modelPosition.x, modelPosition.y, time / 5000.0));
+
+	gamma = round(pow(gamma, 0.5) * 10.0) / 10.0;
+
+	gl_FragColor = vec4(1, 1, 1, gamma);
 }
