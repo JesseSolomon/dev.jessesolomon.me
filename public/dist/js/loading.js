@@ -1,4 +1,4 @@
-class IntroElement extends HTMLElement {
+class LoadingElement extends HTMLElement {
     constructor() {
         super();
         window.addEventListener("load", () => {
@@ -6,4 +6,4 @@ class IntroElement extends HTMLElement {
         });
     }
 }
-customElements.define("js-intro", IntroElement);
+customElements.define("js-loading", LoadingElement);

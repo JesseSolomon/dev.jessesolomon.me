@@ -1,14 +1,52 @@
 @use "./mixins/appear.scss";
+@use "./sections/intro.scss";
 
-@import url('https://fonts.googleapis.com/css2?family=Playfair+Display&family=Source+Code+Pro:wght@400;700&display=swap');
+@font-face {
+    font-family: "Noto Serif Georgian";
+    font-style: normal;
+    src: url(/fonts/NotoSerifGeorgian-VariableFont_wdth,wght.ttf);
+}
+
+@font-face {
+    font-family: "Source Code Pro";
+    font-style: normal;
+    src: url(/fonts/SourceCodePro-VariableFont_wght.ttf);
+}
 
 :root {
     // Color palette
     --palette-sky-blue-crayola: #2DE1FC;
     
-    font-family: "Playfair Display", serif;
+    font-family: "Noto Serif Georgian", serif;
 }
 
 body {
     margin: 0;
+}
+
+@keyframes loading_in {
+    from {
+        background-color: #fff;
+    }
+    to {
+        background-color: #F40076;
+    }
+}
+
+js-loading {
+    position: fixed;
+    z-index: 100;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #fff;
+    opacity: 1;
+    animation: loading_in .3s forwards;
+    transition: opacity .3s;
+
+    &.loaded {
+        opacity: 0;
+        pointer-events: none;
+    }
 }

@@ -1,17 +1,134 @@
-@import url("https://fonts.googleapis.com/css2?family=Playfair+Display&family=Source+Code+Pro:wght@400;700&display=swap");
 /**
  * @param $anchor: "top" | "center" | "bottom" Point within the ClientRect where --appear: 0
  * @param $offset: <number> Offset from the bottom of the viewport where --appear: 1 (NOTE: measured in pixels, however not px)
  * Sets a variable (--appear) to a range from 0 - 1, where 0 is `anchor` > `viewportHeight`, and 1 is `anchor` < `viewportHeight` - `offset`
  * This can be used in transform, opacity, and other calculates for scroll-based appeance
  */
+js-intro {
+  display: flex;
+  position: relative;
+  flex-direction: column;
+  justify-content: center;
+  padding: 40px;
+  height: 100vh;
+  gap: 36px;
+  box-sizing: border-box;
+}
+js-intro.loaded .intro--content h1 {
+  transform: translate(0, 0);
+  filter: drop-shadow(4px 4px 0 rgba(255, 255, 255, 0.5)) drop-shadow(8px 8px 0 rgba(255, 255, 255, 0.3)) drop-shadow(12px 12px 0 rgba(255, 255, 255, 0.1));
+}
+js-intro canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: #F40076;
+}
+js-intro .intro--content {
+  position: relative;
+  color: #fff;
+}
+js-intro .intro--content h1 {
+  font-size: 120px;
+  margin: 0 0 24px 0;
+  transform: translate(12px, 12px);
+  filter: drop-shadow(0px 0px 0 rgba(255, 255, 255, 0.5)) drop-shadow(0px 0px 0 rgba(255, 255, 255, 0.3)) drop-shadow(0px 0px 0 rgba(255, 255, 255, 0.1));
+  transition: transform 0.3s, opacity 0.3s, filter 0.3s;
+}
+js-intro .intro--content p {
+  font-size: 36px;
+  margin: 0;
+}
+js-intro .intro--controls {
+  display: flex;
+  position: relative;
+  gap: 24px;
+}
+js-intro .intro--controls button {
+  position: relative;
+  margin: 0;
+  padding: 8px 24px;
+  font-family: "Source Code Pro", monospace;
+  color: #fff;
+  font-size: 24px;
+  line-height: 1em;
+  background: none;
+  border: none;
+  transition: color 0.3s;
+  cursor: pointer;
+}
+js-intro .intro--controls button:hover {
+  color: #F40076;
+}
+js-intro .intro--controls button:hover svg rect {
+  fill: #fff;
+  stroke: #F40076;
+  stroke-dashoffset: 4px;
+}
+js-intro .intro--controls button svg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+js-intro .intro--controls button svg rect {
+  stroke: #fff;
+  fill: transparent;
+  width: 100%;
+  height: 100%;
+  stroke-width: 4px;
+  stroke-dasharray: 4px 4px;
+  transition: stroke-dashoffset 0.3s, fill 0.3s, stroke 0.3s;
+}
+js-intro .intro--controls button span {
+  position: relative;
+}
+
+@font-face {
+  font-family: "Noto Serif Georgian";
+  font-style: normal;
+  src: url(/fonts/NotoSerifGeorgian-VariableFont_wdth,wght.ttf);
+}
+@font-face {
+  font-family: "Source Code Pro";
+  font-style: normal;
+  src: url(/fonts/SourceCodePro-VariableFont_wght.ttf);
+}
 :root {
   --palette-sky-blue-crayola: #2DE1FC;
-  font-family: "Playfair Display", serif;
+  font-family: "Noto Serif Georgian", serif;
 }
 
 body {
   margin: 0;
+}
+
+@keyframes loading_in {
+  from {
+    background-color: #fff;
+  }
+  to {
+    background-color: #F40076;
+  }
+}
+js-loading {
+  position: fixed;
+  z-index: 100;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: #fff;
+  opacity: 1;
+  animation: loading_in 0.3s forwards;
+  transition: opacity 0.3s;
+}
+js-loading.loaded {
+  opacity: 0;
+  pointer-events: none;
 }
 
 /*# sourceMappingURL=index.css.map */

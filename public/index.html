@@ -3,20 +3,28 @@
     <head>
         <title>Me is Jesse!</title>
         <link rel="stylesheet" href="/dist/css/index.css" />
-        <script src="/dist/js/scroll.js"></script>
-        <script src="/dist/js/app.js"></script>
+        <script src="/dist/js/loading.js"></script>
+        <script src="/dist/js/scroll.js" async></script>
+        <script src="/dist/js/app.js" async></script>
+        <script src="/dist/js/intro.js" async></script>
     </head>
     <body>
+        <js-loading></js-loading>
         <js-intro>
             <canvas id="intro--canvas"></canvas>
             <div class="intro--content">
                 <h1>Jesse Solomon</h1>
-                <p>Front-end Web Developer</p>
-                <p>Who also does back-end work, I guess</p>
+                <p>Welcomes you to his interactive portfolio!</p>
             </div>
             <div class="intro--controls">
-                <button name="with-audio">Continue With Audio</button>
-                <button name="without-audio">No Audio</button>
+                <button name="with-audio" title="With Audio">
+                    <svg><rect x="0" y="0"></rect></svg>
+                    <span>With Audio</span>
+                </button>
+                <button name="without-audio" title="Without Audio">
+                    <svg><rect x="0" y="0"></rect></svg>
+                    <span>Without Audio</span>
+                </button>
             </div>
         </js-intro>
         <js-nwa>

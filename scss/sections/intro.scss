@@ -1,0 +1,98 @@
+js-intro {
+    display: flex;
+    position: relative;
+    flex-direction: column;
+    justify-content: center;
+    padding: 40px;
+    height: 100vh;
+    gap: 36px;
+    box-sizing: border-box;
+
+    &.loaded {
+        .intro--content {
+            h1 {
+                transform: translate(0, 0);
+                filter: drop-shadow(4px 4px 0 rgba(255, 255, 255, 0.5)) drop-shadow(8px 8px 0 rgba(255, 255, 255, 0.3)) drop-shadow(12px 12px 0 rgba(255, 255, 255, 0.1));
+            }
+        }
+    }
+
+    canvas {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: #F40076;
+    }
+
+    .intro--content {
+        position: relative;
+        color: #fff;
+
+        h1 {
+            font-size: 120px;
+            margin: 0 0 24px 0;
+            transform: translate(12px, 12px);
+            filter: drop-shadow(0px 0px 0 rgba(255, 255, 255, 0.5)) drop-shadow(0px 0px 0 rgba(255, 255, 255, 0.3)) drop-shadow(0px 0px 0 rgba(255, 255, 255, 0.1));
+            transition: transform .3s, opacity .3s, filter .3s;
+        }
+
+        p {
+            font-size: 36px;
+            margin: 0;
+        }
+    }
+
+    .intro--controls {
+        display: flex;
+        position: relative;
+        gap: 24px;
+
+        button {
+            position: relative;
+            margin: 0;
+            padding: 8px 24px;
+            font-family: "Source Code Pro", monospace;
+            color: #fff;
+            font-size: 24px;
+            line-height: 1em;
+            background: none;
+            border: none;
+            transition: color .3s;
+            cursor: pointer;
+
+            &:hover {
+                color: #F40076;
+
+                svg rect {
+                    fill: #fff;
+                    stroke: #F40076;
+                    stroke-dashoffset: 4px;
+                }
+            }
+
+            svg {
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+
+                rect {
+                    stroke: #fff;
+                    fill: transparent;
+                    width: 100%;
+                    height: 100%;
+                    stroke-width: 4px;
+                    stroke-dasharray: 4px 4px;
+                    transition: stroke-dashoffset .3s, fill .3s, stroke .3s;
+                }
+            }
+
+            span {
+                position: relative;
+            }
+        }
+    }
+}
