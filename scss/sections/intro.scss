@@ -55,8 +55,8 @@ js-intro {
             padding: 8px 24px;
             font-family: "Source Code Pro", monospace;
             color: #fff;
-            font-size: 24px;
-            line-height: 1em;
+            font-size: 21px;
+            line-height: 28px;
             background: none;
             border: none;
             transition: color .3s;
@@ -65,10 +65,14 @@ js-intro {
             &:hover {
                 color: #F40076;
 
-                svg rect {
-                    fill: #fff;
-                    stroke: #F40076;
-                    stroke-dashoffset: 4px;
+                svg {
+                    .stroke {
+                        stroke-dashoffset: 4px;
+                    }
+
+                    .fill {
+                        fill: #fff;
+                    }
                 }
             }
 
@@ -80,13 +84,22 @@ js-intro {
                 height: 100%;
 
                 rect {
-                    stroke: #fff;
                     fill: transparent;
-                    width: 100%;
-                    height: 100%;
-                    stroke-width: 4px;
-                    stroke-dasharray: 4px 4px;
-                    transition: stroke-dashoffset .3s, fill .3s, stroke .3s;
+
+                    &.stroke {
+                        width: 100%;
+                        height: 100%;
+                        stroke: #fff;
+                        stroke-width: 4px;
+                        stroke-dasharray: 4px 4px;
+                        transition: stroke-dashoffset .3s, stroke .3s;
+                    }
+
+                    &.fill {
+                        width: calc(100% - 4px);
+                        height: calc(100% - 4px);
+                        transition: fill .3s;
+                    }
                 }
             }
 

@@ -52,8 +52,8 @@ js-intro .intro--controls button {
   padding: 8px 24px;
   font-family: "Source Code Pro", monospace;
   color: #fff;
-  font-size: 24px;
-  line-height: 1em;
+  font-size: 21px;
+  line-height: 28px;
   background: none;
   border: none;
   transition: color 0.3s;
@@ -62,10 +62,11 @@ js-intro .intro--controls button {
 js-intro .intro--controls button:hover {
   color: #F40076;
 }
-js-intro .intro--controls button:hover svg rect {
-  fill: #fff;
-  stroke: #F40076;
+js-intro .intro--controls button:hover svg .stroke {
   stroke-dashoffset: 4px;
+}
+js-intro .intro--controls button:hover svg .fill {
+  fill: #fff;
 }
 js-intro .intro--controls button svg {
   position: absolute;
@@ -75,13 +76,20 @@ js-intro .intro--controls button svg {
   height: 100%;
 }
 js-intro .intro--controls button svg rect {
-  stroke: #fff;
   fill: transparent;
+}
+js-intro .intro--controls button svg rect.stroke {
   width: 100%;
   height: 100%;
+  stroke: #fff;
   stroke-width: 4px;
   stroke-dasharray: 4px 4px;
-  transition: stroke-dashoffset 0.3s, fill 0.3s, stroke 0.3s;
+  transition: stroke-dashoffset 0.3s, stroke 0.3s;
+}
+js-intro .intro--controls button svg rect.fill {
+  width: calc(100% - 4px);
+  height: calc(100% - 4px);
+  transition: fill 0.3s;
 }
 js-intro .intro--controls button span {
   position: relative;
