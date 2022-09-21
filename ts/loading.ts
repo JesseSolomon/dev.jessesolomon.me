@@ -1,5 +1,7 @@
 /**
- * Allowes elements to hold on the loading screen, ended by `TimeoutEndEvent`, must be declared before `load`
+ * Event: `js:timeout:start`
+ * 
+ * Allows elements to hold on the loading screen, ended by `TimeoutEndEvent`, must be declared before `load`
  */
 class TimeoutStartEvent extends Event {
 	constructor() {
@@ -8,6 +10,8 @@ class TimeoutStartEvent extends Event {
 }
 
 /**
+ * Event: `js:timeout:end`
+ * 
  * Ends a load timeout
  */
 class TimeoutEndEvent extends Event {
@@ -17,6 +21,8 @@ class TimeoutEndEvent extends Event {
 }
 
 /**
+ * Event: `js:loaded`
+ * 
  * Emitted when `load` and all timeouts have resolved
  */
 class ApplicationLoaded extends Event {

@@ -1,19 +1,12 @@
 class IntroElement extends HTMLElement {
+	private boilerplate: ThreeBoilerplate;
 	private start: number = Date.now();
-	private canvas: HTMLCanvasElement;
-	private scene: THREE.Scene;
 	private camera: THREE.OrthographicCamera;
-	private renderer: THREE.Renderer;
 	private plane: THREE.Mesh<THREE.PlaneGeometry, THREE.ShaderMaterial>;
-	private shaders: { vertexShader: string, fragmentShader: string };
 
-	setup() {
+	ready() {
 		this.classList.add("loaded");
 
-		window.addEventListener("resize", () => this.resize());
-
-		this.canvas = this.querySelector("canvas");
-		this.scene = new THREE.Scene();
 		this.camera = new THREE.OrthographicCamera(
 			-1,
 			1,
@@ -23,15 +16,11 @@ class IntroElement extends HTMLElement {
 			100
 		);
 
-		this.renderer = new THREE.WebGLRenderer({
-			canvas: this.canvas,
-			alpha: true
-		});
-
 		this.plane = new THREE.Mesh(
 			new THREE.PlaneGeometry(1, 1),
 			new THREE.ShaderMaterial({
-				...this.shaders,
+				vertexShader: this.boilerplate.shaders["simple.vert"],
+				fragmentShader: this.boilerplate.shaders["intro.frag"],
 				transparent: true,
 				uniforms: {
 					time: { value: this.start - Date.now() }
@@ -45,37 +34,21 @@ class IntroElement extends HTMLElement {
 
 		this.camera.lookAt(0, 0, 1);
 
-		this.scene.add(this.plane);
-		this.scene.add(this.camera);
+		this.boilerplate.scene.add(this.plane);
+		this.boilerplate.scene.add(this.camera);
 
-		this.resize();
-		this.render(true);
+		this.render();
 	}
 
 	resize() {
-		let { width, height } = this.canvas.getBoundingClientRect();
-		let top: number, right: number, bottom: number, left: number;
-
-		// TODO: Cleaner aspect ratio implementation
-		if (width > height) {
-			top = 1;
-			right = width / height;
-			bottom = -1;
-			left = -(width / height);
-		}
-		else {
-			top = height / width;
-			right = 1;
-			bottom = -(height / width);
-			left = -1;
-		}
+		const { width, height } = this.boilerplate.canvas.getBoundingClientRect();
+		const { top, right, bottom, left } = this.boilerplate.orthographicBounds();
 
 		this.camera.top = top;
 		this.camera.right = right;
 		this.camera.bottom = bottom;
 		this.camera.left = left;
 		this.camera.updateProjectionMatrix();
-		this.renderer.setSize(width, height);
 
 		this.plane.scale.set(
 			(width > height ?  width / height : 1) * 2,
@@ -84,32 +57,28 @@ class IntroElement extends HTMLElement {
 		);
 	}
 
-	render(animate: boolean) {
+	render() {
 		this.plane.material.uniforms.time.value = this.start - Date.now();
-		
-		this.renderer.render(this.scene, this.camera);
 
-		if (animate) requestAnimationFrame(() => this.render(true));
+		this.boilerplate.render(this.camera);
+
+		requestAnimationFrame(() => this.render());
 	}
 
 	connectedCallback() {
-		new Promise<{ vertexShader: string, fragmentShader: string }>(async resolve => {
-			this.dispatchEvent(new TimeoutStartEvent());
-
-			const vertexShader = await (await fetch("/glsl/simple.vert.glsl")).text();
-			const fragmentShader = await (await fetch("/glsl/intro.frag.glsl")).text();
-
-			resolve({ vertexShader, fragmentShader });
-		})
-		.then(shaders => {
-			this.shaders = shaders;
-			this.dispatchEvent(new TimeoutEndEvent());
+		this.boilerplate = new ThreeBoilerplate({
+			canvas: this.querySelector("canvas"),
+			shaders: {
+				"simple.vert": "/glsl/simple.vert.glsl",
+				"intro.frag": "/glsl/intro.frag.glsl"
+			}
 		});
 	}
 
     constructor() {
 		super();
 
-		document.body.addEventListener("js:loaded", () => this.setup());
+		this.addEventListener("js:canvas:resize", () => this.resize());
+		this.addEventListener("js:canvas:ready", () => this.ready());
 	}
 }

@@ -1,6 +1,7 @@
 {
 	"compilerOptions": {
 		"rootDir": "ts",
+		"sourceMap": true,
 		"outFile": "dist/js/app.js",
 		"target": "ES2020",
 		"module": "None",

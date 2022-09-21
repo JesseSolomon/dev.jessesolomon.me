@@ -1,1 +1,7 @@
-class NWAElement extends HTMLElement {}
+class NWAElement extends HTMLElement {
+	constructor() {
+		super();
+
+		
+	}
+}
