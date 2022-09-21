@@ -91,7 +91,8 @@ class ThreeBoilerplate {
 		this.scene = new THREE.Scene();
 		this.renderer = new THREE.WebGLRenderer({
 			canvas: this.canvas,
-			alpha: true
+			alpha: true,
+			antialias: true
 		});
 
 		this.canvas.dispatchEvent(new CanvasReadyEvent());
@@ -103,8 +104,9 @@ class ThreeBoilerplate {
 		this.canvas = options.canvas;
 
 		if (options.shaders) {
+			this.canvas.dispatchEvent(new TimeoutStartEvent());
+			
 			new Promise<void>(async resolve => {
-				this.canvas.dispatchEvent(new TimeoutStartEvent());
 	
 				for (let shader in options.shaders) {
 					this.shaders[shader] = await (await fetch(options.shaders[shader])).text();

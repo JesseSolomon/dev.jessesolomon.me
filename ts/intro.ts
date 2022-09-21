@@ -65,7 +65,9 @@ class IntroElement extends HTMLElement {
 		requestAnimationFrame(() => this.render());
 	}
 
-	connectedCallback() {
+    constructor() {
+		super();
+
 		this.boilerplate = new ThreeBoilerplate({
 			canvas: this.querySelector("canvas"),
 			shaders: {
@@ -73,10 +75,6 @@ class IntroElement extends HTMLElement {
 				"intro.frag": "/glsl/intro.frag.glsl"
 			}
 		});
-	}
-
-    constructor() {
-		super();
 
 		this.addEventListener("js:canvas:resize", () => this.resize());
 		this.addEventListener("js:canvas:ready", () => this.ready());
