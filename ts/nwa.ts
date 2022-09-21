@@ -1,6 +1,7 @@
 class NWAElement extends HTMLElement {
 	private boilerplate: ThreeBoilerplate;
 	private camera: THREE.PerspectiveCamera;
+	private ground: THREE.Mesh<THREE.PlaneGeometry, THREE.ShaderMaterial>;
 	private cursor: { x: number, y: number } = { x: 0, y: 0 };
 
 	ready(): void {
@@ -8,21 +9,22 @@ class NWAElement extends HTMLElement {
 
 		this.camera = new THREE.PerspectiveCamera(50, width / height);
 
-		const ground = new THREE.Mesh(
+		this.ground = new THREE.Mesh(
 			new THREE.PlaneGeometry(30, 30, 60, 60),
 			new THREE.ShaderMaterial({
 				vertexShader: this.boilerplate.shaders["nwa.vert"],
 				fragmentShader: this.boilerplate.shaders["nwa.frag"],
 				uniforms: {
 					alphaColor: { value: new THREE.Color(0x04724D) },
-					betaColor: { value: new THREE.Color(0x8AE9C1) }
+					betaColor: { value: new THREE.Color(0x8AE9C1) },
+					blend: { value: 1.0 }
 				}
 			})
 		);
 
-		ground.lookAt(0, 1, 0);
+		this.ground.lookAt(0, 1, 0);
 
-		this.boilerplate.scene.add(this.camera, ground);
+		this.boilerplate.scene.add(this.camera, this.ground);
 
 		this.camera.position.set(0, 1.5, -3);
 		this.camera.lookAt(0, 1, 0);
@@ -35,10 +37,12 @@ class NWAElement extends HTMLElement {
 	}
 
 	render(): void {
+		const { top, height } = this.boilerplate.canvas.getBoundingClientRect();
+
 		let lookX = (this.cursor.x / window.innerWidth - 0.5) * 2;
 		let lookY = (this.cursor.y / window.innerWidth - 0.5) * 2;
 
-		// this.camera.raycast()
+		this.ground.material.uniforms.blend.value = Math.max((top + height / 2) - (window.innerHeight / 2), 0.0) / (window.innerHeight / 2);
 
 		this.boilerplate.render(this.camera);
 
