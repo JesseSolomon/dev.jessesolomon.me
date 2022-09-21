@@ -1,3 +1,106 @@
+/**
+ * Event: `js:canvas:resize`
+ *
+ * Is emitted by a resize on `ThreeBoilerplate`. `preventDefault` stops renderer resizing.
+ */
+class CanvasResizeEvent extends Event {
+    constructor() {
+        super("js:canvas:resize", { bubbles: true });
+    }
+}
+/**
+ * Event: `js:canvas:ready`
+ *
+ * Emitted when a `ThreeBoilerplate` is fully setup. It's recommended to use this event instead of `ApplicationLoaded`.
+ */
+class CanvasReadyEvent extends Event {
+    constructor() {
+        super("js:canvas:ready", { bubbles: true });
+    }
+}
+/**
+ * Boilerplate kit for handling a basic THREE scene/renderer configuration.
+ * Also handles shader loading with appropriate load blocking.
+ */
+class ThreeBoilerplate {
+    constructor(options) {
+        this.shaders = {};
+        this.canvas = options.canvas;
+        console.log("[Boilerplate] Initialized on", this.canvas);
+        if (options.shaders) {
+            LoadingElement.registerTask(new Promise(async (resolve) => {
+                console.log("[Boilerplate] Loading shaders for", this.canvas);
+                for (let shader in options.shaders) {
+                    this.shaders[shader] = await (await fetch(options.shaders[shader])).text();
+                }
+                resolve();
+            }));
+        }
+        document.body.addEventListener("js:loaded", () => this.ready());
+        window.addEventListener("resize", () => this.resize());
+    }
+    /**
+     * Generates orthographic camera bounds from the `canvas` aspect-ratio.
+     * Ranges from `-1` to `1` for top, right, bottom, and left.
+     */
+    orthographicBounds() {
+        const { width, height } = this.canvas.getBoundingClientRect();
+        if (width > height) {
+            return {
+                top: 1,
+                right: width / height,
+                bottom: -1,
+                left: -(width / height)
+            };
+        }
+        else {
+            return {
+                top: height / width,
+                right: 1,
+                bottom: -(height / width),
+                left: -1
+            };
+        }
+    }
+    /**
+     * - Handlers renderer resizing.
+     * - Emits a `CanvasResizeEvent`, for custom resize controls. `preventDefault` stops renderer resizing.
+     * - Is invoked on window resize.
+     */
+    resize() {
+        const event = new CanvasResizeEvent();
+        this.canvas.dispatchEvent(event);
+        if (!event.defaultPrevented) {
+            const { width, height } = this.canvas.getBoundingClientRect();
+            this.renderer.setSize(width, height);
+            this.canvas.style.width = "";
+            this.canvas.style.height = "";
+        }
+    }
+    /**
+     * Literally just renders the scene. Does not invoke `requestAnimationFrame`.
+     */
+    render(camera) {
+        this.renderer.render(this.scene, camera);
+    }
+    /**
+     * Invoked after any shaders are loaded.
+     * - Sets up scene and renderer.
+     * - Emits a `CanvasReadyEvent`.
+     * - Resizes.
+     */
+    ready() {
+        console.log("[Boilerplate] Ready!", this.canvas);
+        this.scene = new THREE.Scene();
+        this.renderer = new THREE.WebGLRenderer({
+            canvas: this.canvas,
+            alpha: true,
+            antialias: true
+        });
+        this.canvas.dispatchEvent(new CanvasReadyEvent());
+        this.resize();
+    }
+}
 const preferences = {
     muted: true
 };
@@ -72,26 +175,6 @@ class IntroElement extends HTMLElement {
     }
 }
 /**
- * Event: `js:timeout:start`
- *
- * Allows elements to hold on the loading screen, ended by `TimeoutEndEvent`, must be declared before `load`
- */
-class TimeoutStartEvent extends Event {
-    constructor() {
-        super("js:timeout:start", { bubbles: true });
-    }
-}
-/**
- * Event: `js:timeout:end`
- *
- * Ends a load timeout
- */
-class TimeoutEndEvent extends Event {
-    constructor() {
-        super("js:timeout:end", { bubbles: true });
-    }
-}
-/**
  * Event: `js:loaded`
  *
  * Emitted when `load` and all timeouts have resolved
@@ -104,30 +187,25 @@ class ApplicationLoaded extends Event {
 class LoadingElement extends HTMLElement {
     constructor() {
         super();
-        let timeouts = 0;
-        const timeoutPromise = new Promise(resolve => {
-            document.body.addEventListener("js:timeout:start", () => {
-                timeouts++;
-            });
-            document.body.addEventListener("js:timeout:end", () => {
-                timeouts--;
-                if (timeouts <= 0)
-                    resolve();
-            });
-        });
         window.addEventListener("load", () => {
             console.log("[Lifecycle] Load");
-            timeoutPromise.then(() => {
-                console.log("[Lifecycle] Application Loaded");
+            Promise.all(LoadingElement.tasks).then(() => {
+                console.log("[Lifecycle] Application Loaded;", LoadingElement.tasks.length, "tasks completed");
                 this.dispatchEvent(new ApplicationLoaded());
                 this.classList.add("loaded");
             });
         });
     }
+    static registerTask(promise) {
+        this.tasks.push(promise);
+        console.log("[Lifecycle] Task registered;", this.tasks.length, "total tasks");
+    }
 }
+LoadingElement.tasks = [];
 class NWAElement extends HTMLElement {
     constructor() {
         super();
+        this.cursor = { x: 0, y: 0 };
         this.boilerplate = new ThreeBoilerplate({
             canvas: this.querySelector("canvas"),
             shaders: {
@@ -137,10 +215,16 @@ class NWAElement extends HTMLElement {
         });
         this.addEventListener("js:canvas:ready", () => this.ready());
         this.addEventListener("js:canvas:resize", () => this.resize());
+        window.addEventListener("mousemove", event => {
+            const { top, left } = this.getBoundingClientRect();
+            this.cursor.x = event.clientX - left;
+            this.cursor.y = event.clientY - top;
+        });
     }
     ready() {
         const { width, height } = this.boilerplate.canvas.getBoundingClientRect();
-        const makeSphere = () => new THREE.Mesh(new THREE.SphereGeometry(1), new THREE.ShaderMaterial({
+        this.camera = new THREE.PerspectiveCamera(50, width / height);
+        const ground = new THREE.Mesh(new THREE.PlaneGeometry(30, 30, 60, 60), new THREE.ShaderMaterial({
             vertexShader: this.boilerplate.shaders["nwa.vert"],
             fragmentShader: this.boilerplate.shaders["nwa.frag"],
             uniforms: {
@@ -148,15 +232,8 @@ class NWAElement extends HTMLElement {
                 betaColor: { value: new THREE.Color(0x8AE9C1) }
             }
         }));
-        this.camera = new THREE.PerspectiveCamera(50, width / height);
-        this.boilerplate.scene.add(this.camera);
-        for (let z = 0; z < 10; z++) {
-            for (let x = -(z + 5); x < z + 5; x++) {
-                const sphere = makeSphere();
-                sphere.position.set(x, 0, z);
-                this.boilerplate.scene.add(sphere);
-            }
-        }
+        ground.lookAt(0, 1, 0);
+        this.boilerplate.scene.add(this.camera, ground);
         this.camera.position.set(0, 1.5, -3);
         this.camera.lookAt(0, 1, 0);
         this.render();
@@ -164,6 +241,9 @@ class NWAElement extends HTMLElement {
     resize() {
     }
     render() {
+        let lookX = (this.cursor.x / window.innerWidth - 0.5) * 2;
+        let lookY = (this.cursor.y / window.innerWidth - 0.5) * 2;
+        // this.camera.raycast()
         this.boilerplate.render(this.camera);
         requestAnimationFrame(() => this.render());
     }
@@ -224,108 +304,4 @@ var ScrollBehavior;
     }
     ScrollBehavior.initialize = initialize;
 })(ScrollBehavior || (ScrollBehavior = {}));
-/**
- * Event: `js:canvas:resize`
- *
- * Is emitted by a resize on `ThreeBoilerplate`. `preventDefault` stops renderer resizing.
- */
-class CanvasResizeEvent extends Event {
-    constructor() {
-        super("js:canvas:resize", { bubbles: true });
-    }
-}
-/**
- * Event: `js:canvas:ready`
- *
- * Emitted when a `ThreeBoilerplate` is fully setup. It's recommended to use this event instead of `ApplicationLoaded`.
- */
-class CanvasReadyEvent extends Event {
-    constructor() {
-        super("js:canvas:ready", { bubbles: true });
-    }
-}
-/**
- * Boilerplate kit for handling a basic THREE scene/renderer configuration.
- * Also handles shader loading with appropriate load blocking.
- */
-class ThreeBoilerplate {
-    constructor(options) {
-        this.shaders = {};
-        this.canvas = options.canvas;
-        if (options.shaders) {
-            this.canvas.dispatchEvent(new TimeoutStartEvent());
-            new Promise(async (resolve) => {
-                for (let shader in options.shaders) {
-                    this.shaders[shader] = await (await fetch(options.shaders[shader])).text();
-                }
-                resolve();
-            })
-                .then(() => {
-                this.canvas.dispatchEvent(new TimeoutEndEvent());
-            });
-        }
-        document.body.addEventListener("js:loaded", () => this.ready());
-        window.addEventListener("resize", () => this.resize());
-    }
-    /**
-     * Generates orthographic camera bounds from the `canvas` aspect-ratio.
-     * Ranges from `-1` to `1` for top, right, bottom, and left.
-     */
-    orthographicBounds() {
-        const { width, height } = this.canvas.getBoundingClientRect();
-        if (width > height) {
-            return {
-                top: 1,
-                right: width / height,
-                bottom: -1,
-                left: -(width / height)
-            };
-        }
-        else {
-            return {
-                top: height / width,
-                right: 1,
-                bottom: -(height / width),
-                left: -1
-            };
-        }
-    }
-    /**
-     * - Handlers renderer resizing.
-     * - Emits a `CanvasResizeEvent`, for custom resize controls. `preventDefault` stops renderer resizing.
-     * - Is invoked on window resize.
-     */
-    resize() {
-        const event = new CanvasResizeEvent();
-        this.canvas.dispatchEvent(event);
-        if (!event.defaultPrevented) {
-            const { width, height } = this.canvas.getBoundingClientRect();
-            this.renderer.setSize(width, height);
-            this.canvas.style.width = "";
-            this.canvas.style.height = "";
-        }
-    }
-    /**
-     * Literally just renders the scene. Does not invoke `requestAnimationFrame`.
-     */
-    render(camera) {
-        this.renderer.render(this.scene, camera);
-    }
-    /**
-     * Invoked after any shaders are loaded.
-     * - Sets up scene and renderer.
-     * - Emits a `CanvasReadyEvent`.
-     * - Resizes.
-     */
-    ready() {
-        this.scene = new THREE.Scene();
-        this.renderer = new THREE.WebGLRenderer({
-            canvas: this.canvas,
-            alpha: true,
-            antialias: true
-        });
-        this.canvas.dispatchEvent(new CanvasReadyEvent());
-        this.resize();
-    }
-}
 //# sourceMappingURL=app.js.map

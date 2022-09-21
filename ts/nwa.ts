@@ -1,12 +1,15 @@
 class NWAElement extends HTMLElement {
 	private boilerplate: ThreeBoilerplate;
 	private camera: THREE.PerspectiveCamera;
+	private cursor: { x: number, y: number } = { x: 0, y: 0 };
 
 	ready(): void {
 		const { width, height } = this.boilerplate.canvas.getBoundingClientRect();
 
-		const makeSphere = () => new THREE.Mesh(
-			new THREE.SphereGeometry(1),
+		this.camera = new THREE.PerspectiveCamera(50, width / height);
+
+		const ground = new THREE.Mesh(
+			new THREE.PlaneGeometry(30, 30, 60, 60),
 			new THREE.ShaderMaterial({
 				vertexShader: this.boilerplate.shaders["nwa.vert"],
 				fragmentShader: this.boilerplate.shaders["nwa.frag"],
@@ -17,19 +20,9 @@ class NWAElement extends HTMLElement {
 			})
 		);
 
-		this.camera = new THREE.PerspectiveCamera(50, width / height);
+		ground.lookAt(0, 1, 0);
 
-		this.boilerplate.scene.add(this.camera);
-
-		for (let z = 0; z < 10; z++) {
-			for (let x = -(z + 5); x < z + 5; x++) {
-				const sphere = makeSphere();
-
-				sphere.position.set(x, 0, z);
-
-				this.boilerplate.scene.add(sphere);
-			}
-		}
+		this.boilerplate.scene.add(this.camera, ground);
 
 		this.camera.position.set(0, 1.5, -3);
 		this.camera.lookAt(0, 1, 0);
@@ -42,6 +35,11 @@ class NWAElement extends HTMLElement {
 	}
 
 	render(): void {
+		let lookX = (this.cursor.x / window.innerWidth - 0.5) * 2;
+		let lookY = (this.cursor.y / window.innerWidth - 0.5) * 2;
+
+		// this.camera.raycast()
+
 		this.boilerplate.render(this.camera);
 
 		requestAnimationFrame(() => this.render());
@@ -60,5 +58,12 @@ class NWAElement extends HTMLElement {
 
 		this.addEventListener("js:canvas:ready", () => this.ready());
 		this.addEventListener("js:canvas:resize", () => this.resize());
+		
+		window.addEventListener("mousemove", event => {
+			const { top, left } = this.getBoundingClientRect();
+
+			this.cursor.x = event.clientX - left;
+			this.cursor.y = event.clientY - top;
+		});
 	}
 }

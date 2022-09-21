@@ -81,7 +81,8 @@ void main() {
 	modelPosition = position;
 
 	vec3 objectPosition = vec3(modelMatrix * vec4(position, 1.0));
-	float gamma = cnoise(vec3(objectPosition.x, objectPosition.z, 0));
+	float gamma = cnoise(vec3(round(objectPosition.x * 10.0) / 10.0, round(objectPosition.z * 10.0) / 10.0, 0) * 0.2);
+	vec3 epsilon = normal * (round(gamma * 10.0) / 10.0) * 2.0;
 
-	gl_Position = projectionMatrix * viewMatrix * modelMatrix * vec4(position + vec3(0, gamma, 0), 1.0);
+	gl_Position = projectionMatrix * viewMatrix * modelMatrix * vec4(position + epsilon, 1.0);
 }

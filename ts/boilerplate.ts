@@ -88,6 +88,8 @@ class ThreeBoilerplate {
 	 * - Resizes.
 	 */
 	ready(): void {
+		console.log("[Boilerplate] Ready!", this.canvas);
+
 		this.scene = new THREE.Scene();
 		this.renderer = new THREE.WebGLRenderer({
 			canvas: this.canvas,
@@ -102,21 +104,18 @@ class ThreeBoilerplate {
 
 	constructor(options: { shaders?: { [name: string]: string }, canvas: HTMLCanvasElement }) {
 		this.canvas = options.canvas;
+		console.log("[Boilerplate] Initialized on", this.canvas);
 
 		if (options.shaders) {
-			this.canvas.dispatchEvent(new TimeoutStartEvent());
-			
-			new Promise<void>(async resolve => {
-	
+			LoadingElement.registerTask(new Promise<void>(async resolve => {
+				console.log("[Boilerplate] Loading shaders for", this.canvas);
+
 				for (let shader in options.shaders) {
 					this.shaders[shader] = await (await fetch(options.shaders[shader])).text();
 				}
 				
 				resolve();
-			})
-			.then(() => {
-				this.canvas.dispatchEvent(new TimeoutEndEvent());
-			});
+			}));
 		}
 
 		document.body.addEventListener("js:loaded", () => this.ready())

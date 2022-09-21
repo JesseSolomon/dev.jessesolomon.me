@@ -5,5 +5,7 @@ uniform vec3 alphaColor;
 uniform vec3 betaColor;
 
 void main() {
-	gl_FragColor = vec4(mix(alphaColor, betaColor, worldPosition.z / 10.0), 1);
+	vec3 surface = mix(alphaColor, betaColor, round(worldPosition.z) / 10.0);
+
+	gl_FragColor = vec4(surface, 1);
 }
