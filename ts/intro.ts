@@ -80,5 +80,21 @@ class IntroElement extends HTMLElement {
 
 		this.addEventListener("js:canvas:resize", () => this.resize());
 		this.addEventListener("js:canvas:ready", () => this.ready());
+
+		this.querySelector("button[name=with-audio]").addEventListener("click", () => {
+			preferences.muted = false;
+			document.querySelector("js-nwa")
+			.scrollIntoView({
+				behavior: "smooth"
+			});
+		});
+
+		this.querySelector("button[name=without-audio]").addEventListener("click", () => {
+			preferences.muted = true;
+			document.querySelector("js-nwa")
+			.scrollIntoView({
+				behavior: "smooth"
+			});
+		});
 	}
 }

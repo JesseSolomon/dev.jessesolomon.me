@@ -1,5 +1,6 @@
 namespace ScrollBehavior {
 	let scrollStylesheet: CSSStyleSheet;
+	let previousScroll: number;
 
 	/**
 	 * Iterates over the given `element` parents, accumulating the static document offset
@@ -40,10 +41,15 @@ namespace ScrollBehavior {
 	/**
 	 * Updates --scroll var on `scrollStylesheet`
 	 */
-	export function updateScrollVars() {
-		const rule = scrollStylesheet.cssRules.item(0) as CSSStyleRule;
+	function updateScrollVars() {
+		if (previousScroll !== window.scrollY) {
+			const rule = scrollStylesheet.cssRules.item(0) as CSSStyleRule;
 
-		rule.style.setProperty("--scroll", window.scrollY.toString());
+			rule.style.setProperty("--scroll", window.scrollY.toString());
+			previousScroll = window.scrollY + 0;
+		}
+
+		requestAnimationFrame(() => updateScrollVars());
 	}
 
 	/**
@@ -51,7 +57,6 @@ namespace ScrollBehavior {
 	 * Initializes global scroll stylesheet
 	 */
 	export function initialize() {
-		window.addEventListener("scroll", () => updateScrollVars());
 		window.addEventListener("resize", () => updateLayoutVars());
 
 		const scrollStylesheetElement = document.createElement("style");

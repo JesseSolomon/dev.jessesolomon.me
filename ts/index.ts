@@ -1,3 +1,7 @@
+const preferences = {
+	muted: true
+};
+
 document.addEventListener("DOMContentLoaded", () => {
 	console.log("[Lifecycle] DOM Loaded");
 

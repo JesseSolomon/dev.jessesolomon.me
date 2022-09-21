@@ -5,13 +5,13 @@
  * This can be used in transform, opacity, and other calculates for scroll-based appeance
  */
 @mixin vars($anchor: "center", $offset: 20) {
-    @if ($anchor: "top") {
+    @if $anchor == "top" {
         --appear: calc(max(min((var(--viewport-height) - (var(--top) - var(--scroll))) / #{$offset}, 1), 0));
     }
-    @if ($anchor: "center") {
+    @if $anchor == "center" {
         --appear: calc(max(min((var(--viewport-height) - ((var(--top) + var(--client-height) / 2) - var(--scroll))) / #{$offset}, 1), 0));
     }
-    @if ($anchor: "bottom") {
+    @if $anchor == "bottom" {
         --appear: calc(max(min((var(--viewport-height) - ((var(--top) + var(--client-height)) - var(--scroll))) / #{$offset}, 1), 0));
     }
 }

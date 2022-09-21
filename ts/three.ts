@@ -69,6 +69,8 @@ class ThreeBoilerplate {
 			const { width, height } = this.canvas.getBoundingClientRect();
 
 			this.renderer.setSize(width, height);
+			this.canvas.style.width = "";
+			this.canvas.style.height = "";
 		}
 	}
 

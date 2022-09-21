@@ -1,0 +1,44 @@
+@use "../mixins/appear.scss";
+
+js-nwa {
+	@include appear.vars("center", 300);
+	display: flex;
+	position: relative;
+	padding: 80px 40px;
+	box-sizing: border-box;
+	width: 100%;
+	height: 100vh;
+	--step: calc(1 / 7 * 100%);
+	background: linear-gradient(
+		to bottom,
+		#edad85 calc(var(--step) * 0) calc(var(--step) * (0 + var(--appear))),
+		#f19677 calc(var(--step) * 1) calc(var(--step) * (1 + var(--appear))),
+		#ed8a93 calc(var(--step) * 2) calc(var(--step) * (2 + var(--appear))),
+		#c485a1 calc(var(--step) * 3) calc(var(--step) * (3 + var(--appear))),
+		#9183a3 calc(var(--step) * 4) calc(var(--step) * (4 + var(--appear))),
+		#6196bd calc(var(--step) * 5) calc(var(--step) * (5 + var(--appear))),
+		#3d8fb8 calc(var(--step) * 6) calc(var(--step) * (6 + var(--appear)))
+	);
+
+	canvas {
+		position: absolute;
+		top: 0;
+		left: 0;
+		width: 100%;
+		height: 100%;
+	}
+
+	h1 {
+		position: relative;
+		display: flex;
+		margin: 0;
+		color: #fff;
+		font-family: "Noto Serif Georgian", serif;
+		font-size: 200px;
+
+		span {
+			transform: translateY(calc((30px + 30px * var(--index)) * (1 - var(--appear))));
+			opacity: var(--appear);
+		}
+	}
+}

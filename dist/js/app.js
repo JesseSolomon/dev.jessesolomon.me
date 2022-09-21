@@ -1,3 +1,6 @@
+const preferences = {
+    muted: true
+};
 document.addEventListener("DOMContentLoaded", () => {
     console.log("[Lifecycle] DOM Loaded");
     ScrollBehavior.initialize();
@@ -11,6 +14,20 @@ class IntroElement extends HTMLElement {
         this.start = Date.now();
         this.addEventListener("js:canvas:resize", () => this.resize());
         this.addEventListener("js:canvas:ready", () => this.ready());
+        this.querySelector("button[name=with-audio]").addEventListener("click", () => {
+            preferences.muted = false;
+            document.querySelector("js-nwa")
+                .scrollIntoView({
+                behavior: "smooth"
+            });
+        });
+        this.querySelector("button[name=without-audio]").addEventListener("click", () => {
+            preferences.muted = true;
+            document.querySelector("js-nwa")
+                .scrollIntoView({
+                behavior: "smooth"
+            });
+        });
     }
     ready() {
         this.classList.add("loaded");
@@ -113,11 +130,30 @@ class LoadingElement extends HTMLElement {
 class NWAElement extends HTMLElement {
     constructor() {
         super();
+        this.addEventListener("js:canvas:ready", () => this.ready());
+        this.addEventListener("js:canvas:resize", () => this.resize());
+    }
+    ready() {
+        const { width, height } = this.boilerplate.canvas.getBoundingClientRect();
+        this.camera = new THREE.PerspectiveCamera(50, width / height);
+        this.boilerplate.scene.add(this.camera);
+        this.camera.position.set(0, 0, -2);
+        this.camera.lookAt(0, 0, 0);
+    }
+    resize() {
+    }
+    render() {
+    }
+    connectedCallback() {
+        this.boilerplate = new ThreeBoilerplate({
+            canvas: this.querySelector("canvas")
+        });
     }
 }
 var ScrollBehavior;
 (function (ScrollBehavior) {
     let scrollStylesheet;
+    let previousScroll;
     /**
      * Iterates over the given `element` parents, accumulating the static document offset
      */
@@ -148,16 +184,18 @@ var ScrollBehavior;
      * Updates --scroll var on `scrollStylesheet`
      */
     function updateScrollVars() {
-        const rule = scrollStylesheet.cssRules.item(0);
-        rule.style.setProperty("--scroll", window.scrollY.toString());
+        if (previousScroll !== window.scrollY) {
+            const rule = scrollStylesheet.cssRules.item(0);
+            rule.style.setProperty("--scroll", window.scrollY.toString());
+            previousScroll = window.scrollY + 0;
+        }
+        requestAnimationFrame(() => updateScrollVars());
     }
-    ScrollBehavior.updateScrollVars = updateScrollVars;
     /**
      * Adds `scroll`, and `resize` listeners to window.
      * Initializes global scroll stylesheet
      */
     function initialize() {
-        window.addEventListener("scroll", () => updateScrollVars());
         window.addEventListener("resize", () => updateLayoutVars());
         const scrollStylesheetElement = document.createElement("style");
         document.head.append(scrollStylesheetElement);
@@ -245,6 +283,8 @@ class ThreeBoilerplate {
         if (!event.defaultPrevented) {
             const { width, height } = this.canvas.getBoundingClientRect();
             this.renderer.setSize(width, height);
+            this.canvas.style.width = "";
+            this.canvas.style.height = "";
         }
     }
     /**
