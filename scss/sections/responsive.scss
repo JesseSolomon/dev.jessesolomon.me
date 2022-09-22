@@ -1,0 +1,137 @@
+@use "../mixins/appear.scss";
+
+js-responsive {
+	--palette-mask: #EAE2B7;
+	--palette-text: #FFF;
+	--palette-primary: #D62828;
+	--palette-secondary: #F77F00;
+	--palette-background1: #003049;
+	--palette-background2: #FCBF49;
+
+	@include appear.vars("center", 800);
+	display: grid;
+	justify-items: center;
+	background-color: var(--palette-mask);
+	--simulated-viewport-width: calc(min(100vw - 40px, 1200px - (800px * var(--appear))));
+	--simulated-viewport-height: calc(min(100vh - 40px, 650px));
+	--vertical-bounds: calc((100vh - var(--simulated-viewport-height)) / 2);
+	--horizontal-bounds: calc((100vw - var(--simulated-viewport-width)) / 2);
+
+	&.break--header .responsive--header {
+		nav {
+			display: none;
+		}
+	}
+
+	.responsive--header {
+		grid-column: 1;
+		grid-row: 1;
+		position: sticky;
+		top: calc(var(--vertical-bounds));
+		display: flex;
+		justify-content: space-between;
+		width: var(--simulated-viewport-width);
+		height: 56px;
+		padding: 0 40px;
+		margin: calc(var(--vertical-bounds)) 0 calc(var(--simulated-viewport-height) - 56px + var(--vertical-bounds));
+		box-sizing: border-box;
+		align-items: center;
+
+		.responsive--logo {
+			display: inline-flex;
+			align-items: center;
+			justify-content: center;
+			width: 36px;
+			height: 36px;
+			font-size: 18px;
+			font-family: "Source Code Pro", monospace;
+			background-color: var(--palette-primary);
+			color: var(--palette-text);
+			border-radius: 50%;
+			text-decoration: none;
+		}
+
+		nav {
+			display: flex;
+			gap: 24px;
+			
+			a {
+				font-size: 16px;
+				color: var(--palette-text);
+				text-decoration: none;
+			}
+		}
+	}
+
+	.responsive--page {
+		position: relative;
+		grid-column: 1;
+		grid-row: 1;
+		padding: calc((100vh - var(--simulated-viewport-height)) / 2) 0;
+		width: var(--simulated-viewport-width);
+
+		.responsive--intro {
+			@include appear.vars("center", calc(var(--viewport-height) / 2));
+			display: grid;
+			grid-template-columns: 2fr 1fr;
+			align-items: center;
+			background-color: var(--palette-background1);
+			padding: 80px 40px;
+
+			.responsive--intro--content {
+				display: flex;
+				flex-direction: column;
+				overflow: hidden;
+				align-items: center;
+				height: max-content;
+				color: var(--palette-text);
+				text-align: center;
+				font-size: 18px;
+				line-height: 1.2em;
+				margin: 0 auto;
+				opacity: calc(var(--appear) / 0.2);
+				width: calc(530px * (var(--appear) - (1 - var(--appear)) * 0.2));
+				border: 1px solid var(--palette-primary);
+
+				h1, p {
+					margin: 16px 0;
+					min-width: 490px;
+					max-width: 490px;
+				}
+			}
+
+			img {
+				width: 100%;
+				height: auto;
+			}
+		}
+	}
+
+	.responsive--device {
+		grid-column: 1;
+		grid-row: 1;
+		position: sticky;
+		top: calc(var(--vertical-bounds) - 16px);
+		margin-top: calc(var(--vertical-bounds) - 16px);
+		margin-bottom: calc(var(--vertical-bounds) - 16px);
+		width: var(--simulated-viewport-width);
+		height: var(--simulated-viewport-height);
+		border: 16px solid #000;
+		border-radius: 10px;
+		pointer-events: none;
+		
+		&::before {
+			position: absolute;
+			top: calc(var(--vertical-bounds) * -1);
+			left: calc(var(--horizontal-bounds) * -1);
+			width: 100vw;
+			height: 100vh;
+			box-sizing: border-box;
+			border-top: calc(var(--vertical-bounds) - 16px) solid var(--palette-mask);
+			border-bottom: calc(var(--vertical-bounds) - 16px) solid var(--palette-mask);
+			border-left: calc(var(--horizontal-bounds) - 16px) solid var(--palette-mask);
+			border-right: calc(var(--horizontal-bounds) - 16px) solid var(--palette-mask);
+			content: "";
+		}
+	}
+}

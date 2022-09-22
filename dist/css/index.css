@@ -169,6 +169,127 @@ js-nwa button::after {
   transform: translateY(0px);
 }
 
+js-responsive {
+  --palette-mask: #EAE2B7;
+  --palette-text: #FFF;
+  --palette-primary: #D62828;
+  --palette-secondary: #F77F00;
+  --palette-background1: #003049;
+  --palette-background2: #FCBF49;
+  --appear: calc(max(min((var(--viewport-height) - ((var(--top) + var(--client-height) / 2) - var(--scroll))) / 800, 1), 0));
+  display: grid;
+  justify-items: center;
+  background-color: var(--palette-mask);
+  --simulated-viewport-width: calc(min(100vw - 40px, 1200px - (800px * var(--appear))));
+  --simulated-viewport-height: calc(min(100vh - 40px, 650px));
+  --vertical-bounds: calc((100vh - var(--simulated-viewport-height)) / 2);
+  --horizontal-bounds: calc((100vw - var(--simulated-viewport-width)) / 2);
+}
+js-responsive.break--header .responsive--header nav {
+  display: none;
+}
+js-responsive .responsive--header {
+  grid-column: 1;
+  grid-row: 1;
+  position: sticky;
+  top: calc(var(--vertical-bounds));
+  display: flex;
+  justify-content: space-between;
+  width: var(--simulated-viewport-width);
+  height: 56px;
+  padding: 0 40px;
+  margin: calc(var(--vertical-bounds)) 0 calc(var(--simulated-viewport-height) - 56px + var(--vertical-bounds));
+  box-sizing: border-box;
+  align-items: center;
+}
+js-responsive .responsive--header .responsive--logo {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  font-size: 18px;
+  font-family: "Source Code Pro", monospace;
+  background-color: var(--palette-primary);
+  color: var(--palette-text);
+  border-radius: 50%;
+  text-decoration: none;
+}
+js-responsive .responsive--header nav {
+  display: flex;
+  gap: 24px;
+}
+js-responsive .responsive--header nav a {
+  font-size: 16px;
+  color: var(--palette-text);
+  text-decoration: none;
+}
+js-responsive .responsive--page {
+  position: relative;
+  grid-column: 1;
+  grid-row: 1;
+  padding: calc((100vh - var(--simulated-viewport-height)) / 2) 0;
+  width: var(--simulated-viewport-width);
+}
+js-responsive .responsive--page .responsive--intro {
+  --appear: calc(max(min((var(--viewport-height) - ((var(--top) + var(--client-height) / 2) - var(--scroll))) / calc(var(--viewport-height) / 2), 1), 0));
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  align-items: center;
+  background-color: var(--palette-background1);
+  padding: 80px 40px;
+}
+js-responsive .responsive--page .responsive--intro .responsive--intro--content {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  align-items: center;
+  height: max-content;
+  color: var(--palette-text);
+  text-align: center;
+  font-size: 18px;
+  line-height: 1.2em;
+  margin: 0 auto;
+  opacity: calc(var(--appear) / 0.2);
+  width: calc(530px * (var(--appear) - (1 - var(--appear)) * 0.2));
+  border: 1px solid var(--palette-primary);
+}
+js-responsive .responsive--page .responsive--intro .responsive--intro--content h1, js-responsive .responsive--page .responsive--intro .responsive--intro--content p {
+  margin: 16px 0;
+  min-width: 490px;
+  max-width: 490px;
+}
+js-responsive .responsive--page .responsive--intro img {
+  width: 100%;
+  height: auto;
+}
+js-responsive .responsive--device {
+  grid-column: 1;
+  grid-row: 1;
+  position: sticky;
+  top: calc(var(--vertical-bounds) - 16px);
+  margin-top: calc(var(--vertical-bounds) - 16px);
+  margin-bottom: calc(var(--vertical-bounds) - 16px);
+  width: var(--simulated-viewport-width);
+  height: var(--simulated-viewport-height);
+  border: 16px solid #000;
+  border-radius: 10px;
+  pointer-events: none;
+}
+js-responsive .responsive--device::before {
+  position: absolute;
+  top: calc(var(--vertical-bounds) * -1);
+  left: calc(var(--horizontal-bounds) * -1);
+  width: 100vw;
+  height: 100vh;
+  box-sizing: border-box;
+  border-top: calc(var(--vertical-bounds) - 16px) solid var(--palette-mask);
+  border-bottom: calc(var(--vertical-bounds) - 16px) solid var(--palette-mask);
+  border-left: calc(var(--horizontal-bounds) - 16px) solid var(--palette-mask);
+  border-right: calc(var(--horizontal-bounds) - 16px) solid var(--palette-mask);
+  content: "";
+}
+
 @font-face {
   font-family: "Noto Serif Georgian";
   font-style: normal;

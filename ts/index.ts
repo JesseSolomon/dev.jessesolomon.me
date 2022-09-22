@@ -10,4 +10,5 @@ document.addEventListener("DOMContentLoaded", () => {
 	customElements.define("js-intro", IntroElement);
 	customElements.define("js-loading", LoadingElement);
 	customElements.define("js-nwa", NWAElement);
+	customElements.define("js-responsive", ResponsiveElement);
 });

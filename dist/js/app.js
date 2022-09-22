@@ -110,6 +110,7 @@ document.addEventListener("DOMContentLoaded", () => {
     customElements.define("js-intro", IntroElement);
     customElements.define("js-loading", LoadingElement);
     customElements.define("js-nwa", NWAElement);
+    customElements.define("js-responsive", ResponsiveElement);
 });
 class IntroElement extends HTMLElement {
     constructor() {
@@ -254,6 +255,17 @@ class NWAElement extends HTMLElement {
         this.ground.material.uniforms.blend.value = Math.max((top + height / 2) - (window.innerHeight / 2), 0.0) / (window.innerHeight / 2);
         this.boilerplate.render(this.camera);
         requestAnimationFrame(() => this.render());
+    }
+}
+class ResponsiveElement extends HTMLElement {
+    breakpoints() {
+        const { width } = this.page.getBoundingClientRect();
+        this.classList.toggle("break--header", width <= 630);
+        requestAnimationFrame(() => this.breakpoints());
+    }
+    connectedCallback() {
+        this.page = this.querySelector(".responsive--page");
+        this.breakpoints();
     }
 }
 var ScrollBehavior;
