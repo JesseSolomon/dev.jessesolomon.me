@@ -41,4 +41,56 @@ js-nwa {
 			opacity: var(--appear);
 		}
 	}
+
+	button {
+		position: absolute;
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		bottom: 80px;
+		right: 80px;
+		padding: 0;
+		border: 2px solid #fff;
+		background-color: transparent;
+		width: 80px;
+		height: 80px;
+		border-radius: 40px;
+		cursor: pointer;
+
+		&:hover {
+			&::before, &::after {
+				transition: transform .3s, opacity .3s;
+			}
+
+			&::before {
+				opacity: 1;
+				transform: translateY(0px);
+			}
+
+			&::after {
+				opacity: 0;
+				transform: translateY(12px);
+			}
+		}
+
+		&::before, &::after {
+			position: absolute;
+			width: 24px;
+			height: 24px;
+			background-position: center;
+			background-size: contain;
+			background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='4 4 16 16' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' class='feather feather-chevron-down'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+			content: "";
+		}
+
+		&::before {
+			opacity: 0;
+			transform: translateY(-12px);
+		}
+
+		&::after {
+			opacity: 1;
+			transform: translateY(0px);
+		}
+	}
 }

@@ -81,7 +81,7 @@ class IntroElement extends HTMLElement {
 
 		this.querySelector("button[name=with-audio]").addEventListener("click", () => {
 			preferences.muted = false;
-			document.querySelector("js-nwa")
+			this.nextElementSibling
 			.scrollIntoView({
 				behavior: "smooth"
 			});
@@ -89,7 +89,7 @@ class IntroElement extends HTMLElement {
 
 		this.querySelector("button[name=without-audio]").addEventListener("click", () => {
 			preferences.muted = true;
-			document.querySelector("js-nwa")
+			this.nextElementSibling
 			.scrollIntoView({
 				behavior: "smooth"
 			});

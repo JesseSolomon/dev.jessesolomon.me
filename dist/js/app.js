@@ -126,14 +126,14 @@ class IntroElement extends HTMLElement {
         this.addEventListener("js:canvas:ready", () => this.ready());
         this.querySelector("button[name=with-audio]").addEventListener("click", () => {
             preferences.muted = false;
-            document.querySelector("js-nwa")
+            this.nextElementSibling
                 .scrollIntoView({
                 behavior: "smooth"
             });
         });
         this.querySelector("button[name=without-audio]").addEventListener("click", () => {
             preferences.muted = true;
-            document.querySelector("js-nwa")
+            this.nextElementSibling
                 .scrollIntoView({
                 behavior: "smooth"
             });
@@ -215,6 +215,12 @@ class NWAElement extends HTMLElement {
         });
         this.addEventListener("js:canvas:ready", () => this.ready());
         this.addEventListener("js:canvas:resize", () => this.resize());
+        this.querySelector("button[name=continue]").addEventListener("click", () => {
+            this.nextElementSibling
+                .scrollIntoView({
+                behavior: "smooth"
+            });
+        });
         window.addEventListener("mousemove", event => {
             const { top, left } = this.getBoundingClientRect();
             this.cursor.x = event.clientX - left;

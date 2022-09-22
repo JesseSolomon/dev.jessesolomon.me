@@ -62,6 +62,13 @@ class NWAElement extends HTMLElement {
 
 		this.addEventListener("js:canvas:ready", () => this.ready());
 		this.addEventListener("js:canvas:resize", () => this.resize());
+
+		this.querySelector("button[name=continue]").addEventListener("click", () => {
+			this.nextElementSibling
+			.scrollIntoView({
+				behavior: "smooth"
+			});
+		});
 		
 		window.addEventListener("mousemove", event => {
 			const { top, left } = this.getBoundingClientRect();
