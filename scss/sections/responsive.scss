@@ -1,67 +1,13 @@
 @use "../mixins/appear.scss";
 
 js-responsive {
-	--palette-mask: #EAE2B7;
-	--palette-text: #FFF;
-	--palette-primary: #D62828;
-	--palette-secondary: #F77F00;
-	--palette-background1: #003049;
-	--palette-background2: #FCBF49;
-
-	@include appear.vars("center", 800);
 	display: grid;
 	justify-items: center;
 	background-color: var(--palette-mask);
-	--simulated-viewport-width: calc(min(100vw - 40px, 1200px - (800px * var(--appear))));
+	// --simulated-viewport-width: calc(min(100vw - 40px, 1200px - (800px * var(--appear))));
 	--simulated-viewport-height: calc(min(100vh - 40px, 650px));
 	--vertical-bounds: calc((100vh - var(--simulated-viewport-height)) / 2);
 	--horizontal-bounds: calc((100vw - var(--simulated-viewport-width)) / 2);
-
-	&.break--header .responsive--header {
-		nav {
-			display: none;
-		}
-	}
-
-	.responsive--header {
-		grid-column: 1;
-		grid-row: 1;
-		position: sticky;
-		top: calc(var(--vertical-bounds));
-		display: flex;
-		justify-content: space-between;
-		width: var(--simulated-viewport-width);
-		height: 56px;
-		padding: 0 40px;
-		margin: calc(var(--vertical-bounds)) 0 calc(var(--simulated-viewport-height) - 56px + var(--vertical-bounds));
-		box-sizing: border-box;
-		align-items: center;
-
-		.responsive--logo {
-			display: inline-flex;
-			align-items: center;
-			justify-content: center;
-			width: 36px;
-			height: 36px;
-			font-size: 18px;
-			font-family: "Source Code Pro", monospace;
-			background-color: var(--palette-primary);
-			color: var(--palette-text);
-			border-radius: 50%;
-			text-decoration: none;
-		}
-
-		nav {
-			display: flex;
-			gap: 24px;
-			
-			a {
-				font-size: 16px;
-				color: var(--palette-text);
-				text-decoration: none;
-			}
-		}
-	}
 
 	.responsive--page {
 		position: relative;
@@ -71,38 +17,36 @@ js-responsive {
 		width: var(--simulated-viewport-width);
 
 		.responsive--intro {
-			@include appear.vars("center", calc(var(--viewport-height) / 2));
-			display: grid;
-			grid-template-columns: 2fr 1fr;
-			align-items: center;
-			background-color: var(--palette-background1);
-			padding: 80px 40px;
+			display: flex;
+			align-items: flex-start;
+			position: relative;
+			height: var(--simulated-viewport-height);
+			background-image: radial-gradient(circle at 75% 0%, #EBEBEB, #59C3C3);
 
-			.responsive--intro--content {
-				display: flex;
-				flex-direction: column;
-				overflow: hidden;
-				align-items: center;
-				height: max-content;
-				color: var(--palette-text);
+			h1 {
+				font-size: calc(min(100px, 100 / 800 * var(--simulated-viewport-width)));
+				font-family: "Alex Brush", cursive;
+				color: #F45B69;
+				width: 5em;
 				text-align: center;
-				font-size: 18px;
-				line-height: 1.2em;
-				margin: 0 auto;
-				opacity: calc(var(--appear) / 0.2);
-				width: calc(530px * (var(--appear) - (1 - var(--appear)) * 0.2));
-				border: 1px solid var(--palette-primary);
-
-				h1, p {
-					margin: 16px 0;
-					min-width: 490px;
-					max-width: 490px;
-				}
+				margin: 40px calc(min(80px, (var(--simulated-viewport-width) - 5em) / 2)) 0;
+				filter: drop-shadow(0px 0px 3px #F45B69);
 			}
 
-			img {
-				width: 100%;
+			.palms {
+				position: absolute;
+				display: block;
+				bottom: 0;
+				left: 0;
+				width: var(--simulated-viewport-width);
 				height: auto;
+				max-height: calc(var(--simulated-viewport-height) - 200px);
+				background-color: #F45B69;
+				mask-size: cover;
+				-webkit-mask-size: cover;
+				mask-image: url(/assets/palms.png);
+				-webkit-mask-image: url(/assets/palms.png);
+				aspect-ratio: 6016/3141;
 			}
 		}
 	}
@@ -110,6 +54,9 @@ js-responsive {
 	.responsive--device {
 		grid-column: 1;
 		grid-row: 1;
+		display: flex;
+		align-items: flex-end;
+		justify-content: flex-end;
 		position: sticky;
 		top: calc(var(--vertical-bounds) - 16px);
 		margin-top: calc(var(--vertical-bounds) - 16px);
@@ -132,6 +79,52 @@ js-responsive {
 			border-left: calc(var(--horizontal-bounds) - 16px) solid var(--palette-mask);
 			border-right: calc(var(--horizontal-bounds) - 16px) solid var(--palette-mask);
 			content: "";
+		}
+
+		.responsive--controls {
+			display: flex;
+			gap: 8px;
+			margin: 25px 40px;
+			padding: 8px 16px;
+			border-radius: 26px;
+			pointer-events: all;
+			backdrop-filter: blur(10px);
+
+			button {
+				display: inline-block;
+				background-size: 24px;
+				background-position: center;
+				background-repeat: no-repeat;
+				background-color: transparent;
+				padding: 0;
+				border: none;
+				width: 36px;
+				height: 36px;
+				border-radius: 50%;
+				border: 2px dashed transparent;
+				transition: border-color .2s;
+				cursor: pointer;
+
+				&.current {
+					border-color: #fff;
+				}
+
+				&[name=auto] {
+					background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%23fff' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' class='feather feather-hexagon'%3E%3Cpath d='M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z'%3E%3C/path%3E%3C/svg%3E");
+				}
+
+				&[name=desktop] {
+					background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%23fff' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' class='feather feather-monitor'%3E%3Crect x='2' y='3' width='20' height='14' rx='2' ry='2'%3E%3C/rect%3E%3Cline x1='8' y1='21' x2='16' y2='21'%3E%3C/line%3E%3Cline x1='12' y1='17' x2='12' y2='21'%3E%3C/line%3E%3C/svg%3E");
+				}
+
+				&[name=tablet] {
+					background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%23fff' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' class='feather feather-tablet'%3E%3Crect x='4' y='2' width='16' height='20' rx='2' ry='2'%3E%3C/rect%3E%3Cline x1='12' y1='18' x2='12.01' y2='18'%3E%3C/line%3E%3C/svg%3E");
+				}
+
+				&[name=phone] {
+					background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%23fff' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' class='feather feather-smartphone'%3E%3Crect x='5' y='2' width='14' height='20' rx='2' ry='2'%3E%3C/rect%3E%3Cline x1='12' y1='18' x2='12.01' y2='18'%3E%3C/line%3E%3C/svg%3E");
+				}
+			}
 		}
 	}
 }
