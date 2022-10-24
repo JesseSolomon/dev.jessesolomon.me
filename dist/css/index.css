@@ -301,6 +301,7 @@ js-responsive .responsive--device .responsive--controls button[name=phone] {
 }
 :root {
   --palette-sky-blue-crayola: #2DE1FC;
+  --palette-mask: #fff;
   font-family: "Noto Serif Georgian", serif;
 }
 
