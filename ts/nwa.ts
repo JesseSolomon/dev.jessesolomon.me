@@ -3,11 +3,13 @@ class NWAElement extends HTMLElement {
 	private camera: THREE.PerspectiveCamera;
 	private ground: THREE.Mesh<THREE.PlaneGeometry, THREE.ShaderMaterial>;
 	private cursor: { x: number, y: number } = { x: 0, y: 0 };
+	private raycaster: THREE.Raycaster;
 
 	ready(): void {
 		const { width, height } = this.boilerplate.canvas.getBoundingClientRect();
 
 		this.camera = new THREE.PerspectiveCamera(50, width / height);
+		this.raycaster = new THREE.Raycaster();
 
 		this.ground = new THREE.Mesh(
 			new THREE.PlaneGeometry(30, 30, 60, 60),
@@ -17,33 +19,41 @@ class NWAElement extends HTMLElement {
 				uniforms: {
 					alphaColor: { value: new THREE.Color(0x04724D) },
 					betaColor: { value: new THREE.Color(0x8AE9C1) },
-					blend: { value: 1.0 }
+					cursor: { value: new THREE.Vector3(0, 0) },
 				}
 			})
 		);
-
+		
 		this.ground.lookAt(0, 1, 0);
+		
+		this.camera.position.set(0, 1.5, -3);
+		this.camera.lookAt(0, 1, 0);
 
 		this.boilerplate.scene.add(this.camera, this.ground);
 
-		this.camera.position.set(0, 1.5, -3);
-		this.camera.lookAt(0, 1, 0);
 
 		this.render();
 	}
 
-	resize(): void {
+	updateCursor(): void {
+		if (this.raycaster) {
+			const { top, left } = this.getBoundingClientRect();
 
+			let lookX = ((this.cursor.x - left) / window.innerWidth) * 2 - 1;
+			let lookY = -((this.cursor.y - top) / window.innerHeight) * 2 + 1;
+
+			this.raycaster.setFromCamera(new THREE.Vector2(lookX, lookY), this.camera);
+
+			const intersects = new THREE.Vector3();
+			const didIntersect = this.raycaster.ray.intersectPlane(new THREE.Plane(new THREE.Vector3(0, 1, 0), 0), intersects);
+
+			if (didIntersect) {
+				this.ground.material.uniforms.cursor.value.copy(intersects);
+			}
+		}
 	}
 
 	render(): void {
-		const { top, height } = this.boilerplate.canvas.getBoundingClientRect();
-
-		let lookX = (this.cursor.x / window.innerWidth - 0.5) * 2;
-		let lookY = (this.cursor.y / window.innerWidth - 0.5) * 2;
-
-		this.ground.material.uniforms.blend.value = Math.max((top + height / 2) - (window.innerHeight / 2), 0.0) / (window.innerHeight / 2);
-
 		this.boilerplate.render(this.camera);
 
 		requestAnimationFrame(() => this.render());
@@ -61,7 +71,7 @@ class NWAElement extends HTMLElement {
 		});
 
 		this.addEventListener("js:canvas:ready", () => this.ready());
-		this.addEventListener("js:canvas:resize", () => this.resize());
+		this.addEventListener("js:canvas:resize", () => this.updateCursor());
 
 		this.querySelector("button[name=continue]").addEventListener("click", () => {
 			this.nextElementSibling
@@ -71,10 +81,14 @@ class NWAElement extends HTMLElement {
 		});
 		
 		window.addEventListener("mousemove", event => {
-			const { top, left } = this.getBoundingClientRect();
+			this.cursor.x = event.clientX;
+			this.cursor.y = event.clientY;
 
-			this.cursor.x = event.clientX - left;
-			this.cursor.y = event.clientY - top;
-		});
+			this.updateCursor();
+		}, { passive: true });
+
+		window.addEventListener("scroll", () => {
+			this.updateCursor();
+		}, { passive: true });
 	}
 }

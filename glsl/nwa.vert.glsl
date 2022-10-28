@@ -1,7 +1,8 @@
 out vec3 worldPosition;
 out vec3 modelPosition;
 
-uniform float blend;
+// uniform float blend;
+uniform vec3 cursor;
 
 //	Classic Perlin 3D Noise 
 //	by Stefan Gustavson
@@ -84,7 +85,11 @@ void main() {
 
 	vec3 objectPosition = vec3(modelMatrix * vec4(position, 1.0));
 	float gamma = cnoise(vec3(round(objectPosition.x * 10.0) / 10.0, round(objectPosition.z * 10.0) / 10.0, 0) * 0.2);
-	vec3 epsilon = normal * mix(round(gamma * 10.0) / 10.0, gamma, blend) * 2.0;
+	gamma = round(gamma * 10.0) / 10.0 * 2.0;
+
+	gamma -= 1.0 / max(distance(objectPosition, cursor), 1.0);
+
+	vec3 epsilon = normal * gamma;
 
 	gl_Position = projectionMatrix * viewMatrix * modelMatrix * vec4(position + epsilon, 1.0);
 }
