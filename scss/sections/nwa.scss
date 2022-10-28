@@ -28,17 +28,42 @@ js-nwa {
 		height: 100%;
 	}
 
-	h1 {
+	.content {
 		position: relative;
-		display: flex;
-		margin: 0;
-		color: #fff;
-		font-family: "Noto Serif Georgian", serif;
-		font-size: 200px;
 
-		span {
-			transform: translateY(calc((30px + 30px * var(--index)) * (1 - var(--appear))));
-			opacity: var(--appear);
+		h1 {
+			display: flex;
+			margin: 0;
+			font-size: 1.2em;
+			color: #fff;
+			font-family: "Noto Serif Georgian", serif;
+			font-size: 200px;
+
+			span {
+				transform: translateY(calc((30px + 30px * var(--index)) * (1 - var(--appear))));
+				opacity: var(--appear);
+			}
+		}
+		
+		h3 {
+			font-size: 24px;
+			line-height: 1.2em;
+			color: #fff;
+			font-family: "Noto Serif Georgian", serif;
+			margin: 0;
+		}
+		
+		p {
+			font-size: 18px;
+			line-height: 1.2em;
+			color: #fff;
+			font-family: "Noto Serif Georgian", serif;
+		}
+		
+		a {
+			font-family: "Source Code Pro", monospace;
+			color: #fff;
+			text-decoration: underline;
 		}
 	}
 

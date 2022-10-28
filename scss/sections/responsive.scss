@@ -49,6 +49,37 @@ js-responsive {
 				aspect-ratio: 6016/3141;
 			}
 		}
+		
+		.responsive--content {
+			display: grid;
+			padding: 60px 80px;
+			background-color: #F3FFBD;
+			color: #F45B69;
+			align-items: flex-start;
+			grid-template-columns: max-content 1fr;
+			column-gap: 24px;
+			
+			.quote {
+				font-size: 80px;
+				line-height: 1em;
+				
+				&::before {
+					content: "\"";
+				}
+			}
+			
+			h3 {
+				margin: 16px 0 0 0;
+				font-size: 32px;
+				line-height: 1.2em;
+			}
+			
+			p {
+				font-size: 18px;
+				max-width: 500px;
+				grid-column: span 2;
+			}
+		}
 	}
 
 	.responsive--device {
@@ -88,6 +119,7 @@ js-responsive {
 			padding: 8px 16px;
 			border-radius: 26px;
 			pointer-events: all;
+			background-color: rgba(72, 220, 243, 0.2);
 			backdrop-filter: blur(10px);
 
 			button {

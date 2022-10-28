@@ -113,17 +113,38 @@ js-nwa canvas {
   width: 100%;
   height: 100%;
 }
-js-nwa h1 {
+js-nwa .content {
   position: relative;
+}
+js-nwa .content h1 {
   display: flex;
   margin: 0;
+  font-size: 1.2em;
   color: #fff;
   font-family: "Noto Serif Georgian", serif;
   font-size: 200px;
 }
-js-nwa h1 span {
+js-nwa .content h1 span {
   transform: translateY(calc((30px + 30px * var(--index)) * (1 - var(--appear))));
   opacity: var(--appear);
+}
+js-nwa .content h3 {
+  font-size: 24px;
+  line-height: 1.2em;
+  color: #fff;
+  font-family: "Noto Serif Georgian", serif;
+  margin: 0;
+}
+js-nwa .content p {
+  font-size: 18px;
+  line-height: 1.2em;
+  color: #fff;
+  font-family: "Noto Serif Georgian", serif;
+}
+js-nwa .content a {
+  font-family: "Source Code Pro", monospace;
+  color: #fff;
+  text-decoration: underline;
 }
 js-nwa button {
   position: absolute;
@@ -215,6 +236,32 @@ js-responsive .responsive--page .responsive--intro .palms {
   -webkit-mask-image: url(/assets/palms.png);
   aspect-ratio: 6016/3141;
 }
+js-responsive .responsive--page .responsive--content {
+  display: grid;
+  padding: 60px 80px;
+  background-color: #F3FFBD;
+  color: #F45B69;
+  align-items: flex-start;
+  grid-template-columns: max-content 1fr;
+  column-gap: 24px;
+}
+js-responsive .responsive--page .responsive--content .quote {
+  font-size: 80px;
+  line-height: 1em;
+}
+js-responsive .responsive--page .responsive--content .quote::before {
+  content: '"';
+}
+js-responsive .responsive--page .responsive--content h3 {
+  margin: 16px 0 0 0;
+  font-size: 32px;
+  line-height: 1.2em;
+}
+js-responsive .responsive--page .responsive--content p {
+  font-size: 18px;
+  max-width: 500px;
+  grid-column: span 2;
+}
 js-responsive .responsive--device {
   grid-column: 1;
   grid-row: 1;
@@ -251,6 +298,7 @@ js-responsive .responsive--device .responsive--controls {
   padding: 8px 16px;
   border-radius: 26px;
   pointer-events: all;
+  background-color: rgba(72, 220, 243, 0.2);
   backdrop-filter: blur(10px);
 }
 js-responsive .responsive--device .responsive--controls button {
